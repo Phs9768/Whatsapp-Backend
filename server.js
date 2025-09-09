@@ -1,17 +1,17 @@
 const express = require("express");
 const twilio = require("twilio");
+const cors = require('cors'); // Importe o pacote cors
 
 const app = express();
 app.use(express.json());
+app.use(cors()); // Use o middleware para permitir requisições de outras origens
 
-// Credenciais do Twilio (você vai colocar no Render depois como variáveis de ambiente)
-const accountSid = process.env.TWILIO_SID; 
+// Credenciais do Twilio
+const accountSid = process.env.TWILIO_SID;
 const authToken = process.env.TWILIO_AUTH;
 const client = twilio(accountSid, authToken);
 
-// Número de destino (quem vai receber a mensagem)
-// Formato internacional: whatsapp:+55DDDNUMERO
-const destino = "whatsapp:+5511991557050"; // TROQUE PELO NÚMERO DE QUEM RECEBE
+const myNumber = "whatsapp:+5511991557050"; // seu número (ex.: +5511999999999)
 const twilioNumber = "whatsapp:+14155238886"; // número sandbox do Twilio
 
 app.post("/enviar-whatsapp", async (req, res) => {
@@ -20,7 +20,7 @@ app.post("/enviar-whatsapp", async (req, res) => {
   try {
     const msg = await client.messages.create({
       from: twilioNumber,
-      to: destino,
+      to: myNumber,
       body: mensagem
     });
     res.json({ ok: true, sid: msg.sid });
